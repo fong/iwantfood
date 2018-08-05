@@ -1,11 +1,12 @@
-import {AppBar, IconButton, Toolbar, Typography} from '@material-ui/core/';
-import MenuIcon from '@material-ui/icons/Menu';
+import {AppBar, Toolbar} from '@material-ui/core/';
+import Button from '@material-ui/core/Button';
+// import MenuIcon from '@material-ui/icons/Menu';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 // import { Nav, Navbar, NavItem } from 'react-bootstrap';
 // import { IndexLinkContainer } from "react-router-bootstrap";
 
-export const Header: React.StatelessComponent<{}> = () => {
+/* export const Header: React.StatelessComponent<{}> = () => {
     return (
             <AppBar position="static">
                 <Toolbar>
@@ -19,5 +20,21 @@ export const Header: React.StatelessComponent<{}> = () => {
                     </Typography>
                 </Toolbar>
             </AppBar>
+    );
+} */
+
+export const Header: React.StatelessComponent<{}> = () => {
+    return (
+        <AppBar position="static" color="default">
+            <Toolbar style={{backgroundColor: "gray"}}>
+                <Button color="inherit">
+                    {/* <Link style={{color: "white"}} to="/">I want food</Link> */}
+                    <Link to="/">I really want food.</Link>
+                </Button>
+                <Button color="inherit">
+                    <Link to="/AboutComponent"> About </Link>
+                </Button>
+            </Toolbar>
+        </AppBar>
     );
 }

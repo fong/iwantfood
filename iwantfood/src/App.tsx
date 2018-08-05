@@ -2,30 +2,22 @@ import * as React from 'react';
 import './App.css';
 
 export default class App extends React.Component<{}> {
-  /* public render() {
-    return (
-      <div className="container-fluid">
-      <div className="centreText">
-        { }
-        <h2>I really want food.</h2>
-        <p>{this.props.coords.latitude}</p>
-        <p>{this.props.coords.longitude}</p>
-      </div>
-    </div>
-    );
-  } */
 
   public state = {
+    area: false,
     currentLatLng: {
       lat: 0,
       lng: 0
-    }
+    },
+    distance: 50,
+    nearby: false,
   }
 
   constructor(props: any){
     super(props)
     // this.showCurrentLocation()
-
+    this.nearbySelect = this.nearbySelect.bind(this);
+    this.areaSelect = this.areaSelect.bind(this);
     }
 
   public onChange = () => {
@@ -33,43 +25,157 @@ export default class App extends React.Component<{}> {
   }
 
   public showCurrentLocation = () => {
-    console.log("showCurrentLocation");
     if (navigator.geolocation) {
-      console.log("OK");
       navigator.geolocation.getCurrentPosition(
         position => {
           this.setState({
+            area: false,
             currentLatLng: {
               lat: position.coords.latitude,
               lng: position.coords.longitude
-            }
+            },
+            distance: 50,
+            nearby: true
           });
-          console.log(this.state);
         }
       )
-    } else {
-      console.log("Not OK");
-      this.setState({
-        currentLatLng: {
-          lat: 0,
-          lng: 0
-        }
-      });
     }
-    console.log("SetState");
-    this.forceUpdate();
   }
 
+  public nearbySelect(){
+    this.showCurrentLocation();
+    const prevState = JSON.parse(JSON.stringify(this.state));
+    if (prevState.area === true){
+      prevState.nearby = true;
+      prevState.area = false;
+    } else {
+      if (prevState.nearby === true){
+        prevState.nearby = false;
+        prevState.area = false;
+      } else {
+        prevState.nearby = true;
+        prevState.area = false;
+      }
+    }
+    this.setState(prevState); 
+  }
 
-  public componentDidMount() {
-    this.showCurrentLocation()
+  public areaSelect(){
+    const prevState = JSON.parse(JSON.stringify(this.state));
+    if (prevState.nearby === true){
+      prevState.area = true;
+      prevState.nearby = false;
+    } else {
+      if (prevState.area === true){
+        prevState.area = false;
+        prevState.nearby = false;
+      } else {
+        prevState.area = true;
+        prevState.nearby = false;
+      }
+    }
+    this.setState(prevState);
+  }
+
+  public distanceSelect(distance: number){
+    let prevState = JSON.parse(JSON.stringify(this.state.distance));
+    prevState = distance;
+
+    this.setState({
+      distance: prevState 
+    }); 
   }
 
   public render() {
     return (
-      <div>
-        <button onClick={this.showCurrentLocation}>Get My Location
-        </button>
+      <div className="container">
+        <span className="largetext">I really want food. </span>
+        <br/><br/>
+        <span className="mediumtext">I want go somewhere </span>
+
+        {this.state.nearby ? (
+          <span>
+            <span className="selected" onClick={this.nearbySelect}>nearby</span>
+          </span>
+          ) : (
+          <span>
+            <span className="select" onClick={this.nearbySelect}>nearby</span>
+          </span>)}
+
+        <span className="mediumtext"> / </span>
+        
+        {this.state.area ? (
+          <span>
+            <span className="selected" onClick={this.areaSelect}>in another area</span>
+          </span>
+          ) : (
+          <span>
+            <span className="select" onClick={this.areaSelect}>in another area</span>
+          </span>)}
+
+        <span className="mediumtext">.</span><br/><br/>
+
+         {this.state.nearby ? (
+          <div>
+            <span className="mediumtext">I want it to be less than </span>
+
+            {this.state.distance === 250 ? (
+              <span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 250)}>250m</span>
+              </span>
+              ) : (
+              <span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 250)}>250m</span>
+              </span>)}
+
+            <span className="mediumtext"> / </span>
+            
+            {this.state.distance === 500 ? (
+              <span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 500)}>500m</span>
+              </span>
+              ) : (
+              <span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 500)}>500m</span>
+              </span>)}
+
+            <span className="mediumtext"> / </span>
+            
+            {this.state.distance === 1000 ? (
+              <span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 1000)}>1km</span>
+              </span>
+              ) : (
+              <span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 1000)}>1km</span>
+              </span>)}
+
+            <span className="mediumtext"> / </span>
+            
+            {this.state.distance === 2000 ? (
+              <span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 2000)}>2km</span>
+              </span>
+              ) : (
+              <span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 2000)}>2km</span>
+              </span>)}
+
+            <span className="mediumtext"> / </span>
+            
+            {this.state.distance === 5000 ? (
+              <span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 5000)}>5km</span>
+              </span>
+              ) : (
+              <span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 5000)}>5km</span>
+              </span>)}
+
+            <span className="mediumtext"> away.</span>
+          </div>
+         ):(<div>Nope</div>)}
+
         <p>
           currentLat={this.state.currentLatLng.lat}<br/>
           currentLng={this.state.currentLatLng.lng}
