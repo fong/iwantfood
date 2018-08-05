@@ -1,32 +1,31 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
 }
 
 .container {
   margin-top: 5%;
   padding: 8px;
-  text-align: center
 }
 
-.select {
+.notpicked {
    font-size: 1.5em;
    color: #adadad;
    cursor: pointer
 }
 
-.select:hover {
+.notpicked:hover {
   font-size: 1.5em;
   color: #83afe7;
   cursor: pointer
 }
 
-.selected {
+.picked {
   font-size: 2.5em;
   color: #00aeff;
   cursor: pointer
 }
 
-.selected:hover {
+.picked:hover {
   font-size: 2.5em;
   color: #83bae7;
   cursor: pointer
@@ -43,3 +42,13 @@
 .normaltext {
   font-size: 2em;
 }
+
+.mapBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .map {
+  width: 50%;
+} */
