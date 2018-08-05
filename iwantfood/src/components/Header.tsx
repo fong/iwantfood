@@ -27,13 +27,17 @@ export const Header: React.StatelessComponent<{}> = () => {
     return (
         <AppBar position="static" color="default">
             <Toolbar style={{backgroundColor: "gray"}}>
-                <Button color="inherit">
-                    {/* <Link style={{color: "white"}} to="/">I want food</Link> */}
-                    <Link to="/">I really want food.</Link>
-                </Button>
-                <Button color="inherit">
-                    <Link to="/AboutComponent"> About </Link>
-                </Button>
+                <Link to="/">
+                    <Button color="inherit">
+                        {/* <Link style={{color: "white"}} to="/">I want food</Link> */}
+                        I really want food.
+                    </Button>
+                </Link>
+                <Link to="/AboutComponent">
+                    <Button color="inherit">
+                        About 
+                    </Button>
+                </Link>
             </Toolbar>
         </AppBar>
     );

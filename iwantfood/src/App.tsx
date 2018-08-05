@@ -1,3 +1,4 @@
+// import { MenuItem, TextField } from '@material-ui/core';
 import * as React from 'react';
 import './App.css';
 
@@ -90,7 +91,7 @@ export default class App extends React.Component<{}> {
     return (
       <div className="container">
         <span className="largetext">I really want food. </span>
-        <br/><br/>
+        <br/><br/><br/><br/>
         <span className="mediumtext">I want go somewhere </span>
 
         {this.state.nearby ? (
@@ -117,62 +118,51 @@ export default class App extends React.Component<{}> {
 
          {this.state.nearby ? (
           <div>
-            <span className="mediumtext">I want it to be less than </span>
-
-            {this.state.distance === 250 ? (
-              <span>
-                <span className="selected" onClick={this.distanceSelect.bind(this, 250)}>250m</span>
-              </span>
-              ) : (
-              <span>
-                <span className="select" onClick={this.distanceSelect.bind(this, 250)}>250m</span>
-              </span>)}
-
-            <span className="mediumtext"> / </span>
+            <span className="mediumtext">I want it to be </span>
             
             {this.state.distance === 500 ? (
               <span>
-                <span className="selected" onClick={this.distanceSelect.bind(this, 500)}>500m</span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 500)}>pretty <sub style={{fontSize: "0.5em"}}> (500m)</sub></span>
               </span>
               ) : (
               <span>
-                <span className="select" onClick={this.distanceSelect.bind(this, 500)}>500m</span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 500)}>pretty <sub style={{fontSize: "0.5em"}}> (500m)</sub></span>
               </span>)}
 
             <span className="mediumtext"> / </span>
             
             {this.state.distance === 1000 ? (
               <span>
-                <span className="selected" onClick={this.distanceSelect.bind(this, 1000)}>1km</span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 1000)}>kinda <sub style={{fontSize: "0.5em"}}> (1km)</sub></span>
               </span>
               ) : (
               <span>
-                <span className="select" onClick={this.distanceSelect.bind(this, 1000)}>1km</span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 1000)}>kinda  <sub style={{fontSize: "0.5em"}}> (1km)</sub></span>
               </span>)}
 
             <span className="mediumtext"> / </span>
             
             {this.state.distance === 2000 ? (
               <span>
-                <span className="selected" onClick={this.distanceSelect.bind(this, 2000)}>2km</span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 2000)}>somewhat  <sub style={{fontSize: "0.5em"}}> (2km)</sub></span>
               </span>
               ) : (
               <span>
-                <span className="select" onClick={this.distanceSelect.bind(this, 2000)}>2km</span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 2000)}>somewhat  <sub style={{fontSize: "0.5em"}}> (2km)</sub></span>
               </span>)}
 
             <span className="mediumtext"> / </span>
             
             {this.state.distance === 5000 ? (
               <span>
-                <span className="selected" onClick={this.distanceSelect.bind(this, 5000)}>5km</span>
+                <span className="selected" onClick={this.distanceSelect.bind(this, 5000)}>not even  <sub style={{fontSize: "0.5em"}}> (5km)</sub></span>
               </span>
               ) : (
               <span>
-                <span className="select" onClick={this.distanceSelect.bind(this, 5000)}>5km</span>
+                <span className="select" onClick={this.distanceSelect.bind(this, 5000)}>not even  <sub style={{fontSize: "0.5em"}}> (5km)</sub></span>
               </span>)}
 
-            <span className="mediumtext"> away.</span>
+            <span className="mediumtext"> close.</span>
           </div>
          ):(<div>Nope</div>)}
 
