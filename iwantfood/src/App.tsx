@@ -93,9 +93,6 @@ export default class App extends React.Component<{}> {
             this.nextState.currentLatLng.lng = this.map.getCenter().lng;
 
             this.setState(this.nextState);
-            console.log("this state");
-            console.log(this.state);
-            console.log("next state");
             console.log(this.nextState);
             this.circle.setCenter(this.map.getCenter());
           });
@@ -124,6 +121,7 @@ export default class App extends React.Component<{}> {
 
   public areaSelect(){
     this.nextState = JSON.parse(JSON.stringify(this.nextState));
+    this.showMap();
     if (this.nextState.nearby === true){
       this.nextState.area = true;
       this.nextState.nearby = false;
@@ -134,7 +132,6 @@ export default class App extends React.Component<{}> {
       } else {
         this.nextState.area = true;
         this.nextState.nearby = false;
-        this.showMap();
       }
     }
     this.setState(this.nextState);
