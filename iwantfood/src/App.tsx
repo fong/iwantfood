@@ -10,15 +10,15 @@ Object.getOwnPropertyDescriptor(mapboxgl, "accessToken").set('pk.eyJ1IjoiZm9uZ2U
 
 export default class App extends React.Component<{}> {
 
-/*   public nextState = {
+  public state = {
     area: false,
     currentLatLng: {
       lat: 0,
       lng: 0
     },
-    distance: 50,
+    distance: 1,
     nearby: false,
-  } */
+  }
 
   public nextState: any = {
     area: false,
@@ -26,7 +26,7 @@ export default class App extends React.Component<{}> {
       lat: 0,
       lng: 0
     },
-    distance: 50,
+    distance: 1,
     nearby: false,
   };
 
@@ -59,15 +59,10 @@ export default class App extends React.Component<{}> {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
-          this.setState({
-            area: false,
-            currentLatLng: {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            },
-            distance: 50,
-            nearby: true
-          });
+          this.nextState = JSON.parse(JSON.stringify(this.nextState));
+          this.nextState.currentLatLng.lat = position.coords.latitude;
+          this.nextState.currentLatLng.lng = position.coords.longitude;
+          this.setState(this.nextState);
         }
       )
     }
@@ -75,33 +70,38 @@ export default class App extends React.Component<{}> {
 
   public showMap = () => {
     const nextState = this.nextState;
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.lat =  position.coords.latitude;
+          this.lng = position.coords.longitude;
 
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        this.lat =  position.coords.latitude;
-        this.lng = position.coords.longitude;
+          this.map = new mapboxgl.Map({
+            container: this.mapContainer,
+            style: 'mapbox://styles/mapbox/streets-v10',
+            center: [this.lng, this.lat],
+            zoom: 12
+          });
 
-        this.map = new mapboxgl.Map({
-          container: this.mapContainer,
-          style: 'mapbox://styles/mapbox/streets-v10',
-          center: [this.lng, this.lat],
-          zoom: 12
-        });
+          this.circle = new MapboxCircle({lat: this.lat, lng: this.lng}, this.nextState.distance, {
+            fillColor: '#29AB87'
+          }).addTo(this.map);
+      
+          this.map.on('move', () => {
+            this.nextState = JSON.parse(JSON.stringify(this.nextState));
+            this.nextState.currentLatLng.lat = this.map.getCenter().lat;
+            this.nextState.currentLatLng.lng = this.map.getCenter().lng;
 
-        this.circle = new MapboxCircle({lat: this.lat, lng: this.lng}, this.nextState.distance, {
-          fillColor: '#29AB87'
-        }).addTo(this.map);
-    
-        this.map.on('move', () => {
-          this.nextState = JSON.parse(JSON.stringify(this.nextState));
-          this.nextState.lat = this.map.getCenter().lat;
-          this.nextState.lng = this.map.getCenter().lng;
-
-          this.setState(this.nextState);
-          this.circle.setCenter(this.map.getCenter());
-        });
-      }
-    );
+            this.setState(this.nextState);
+            console.log("this state");
+            console.log(this.state);
+            console.log("next state");
+            console.log(this.nextState);
+            this.circle.setCenter(this.map.getCenter());
+          });
+        }
+      );
+    }
   }
 
   public nearbySelect(){
@@ -147,7 +147,6 @@ export default class App extends React.Component<{}> {
     if (this.circle){
       this.circle.setRadius(distance);
     }
-
     this.setState(this.nextState); 
   }
 
