@@ -43,7 +43,6 @@ export default class App extends React.Component<{}> {
   }
 
   public nearbySelect(){
-    this.showCurrentLocation();
     const prevState = JSON.parse(JSON.stringify(this.state));
     if (prevState.area === true){
       prevState.nearby = true;
@@ -55,6 +54,7 @@ export default class App extends React.Component<{}> {
       } else {
         prevState.nearby = true;
         prevState.area = false;
+        this.showCurrentLocation();
       }
     }
     this.setState(prevState); 
