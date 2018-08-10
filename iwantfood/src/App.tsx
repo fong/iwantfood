@@ -18,6 +18,7 @@ export default class App extends React.Component<{}> {
     },
     distance: 1,
     nearby: false,
+    establishments: null
   }
 
   public nextState: any = {
@@ -28,6 +29,7 @@ export default class App extends React.Component<{}> {
     },
     distance: 1,
     nearby: false,
+    establishments: null,
   };
 
   public lat = 0;
@@ -36,6 +38,7 @@ export default class App extends React.Component<{}> {
   public mapBox: any = null;
   public map: any;
   public circle: any;
+  public establishments;
 
   mapToggle: boolean = false;
   mapContainer: HTMLDivElement;
@@ -48,6 +51,7 @@ export default class App extends React.Component<{}> {
     this.nearbySelect = this.nearbySelect.bind(this);
     this.areaSelect = this.areaSelect.bind(this);
     this.showCurrentLocation();
+    this.getCrusines();
     }
 
   public onChange = () => {
@@ -147,8 +151,42 @@ export default class App extends React.Component<{}> {
     this.setState(this.nextState); 
   }
 
+  //94a1cc7a801233acc372942240f48ef5
+  public getCrusines() {
+
+    let header = new Headers();
+    header.append('Accept', 'application/json');
+    header.append('user-key', '94a1cc7a801233acc372942240f48ef5');
+
+    let init = {
+        method: 'GET',
+        headers: header
+      }
+
+    fetch(new Request('https://developers.zomato.com/api/v2.1/establishments?lat=-36.758917&lon=174.715662'), init)
+    .then((response : any) => {
+      if (!response.ok) {
+        //this.setState({results: response.statusText})
+      }
+      else {
+        response.json().then((resp:any) => {
+          this.nextState = JSON.parse(JSON.stringify(this.nextState));
+          this.nextState.establishments = resp.establishments;//toObject(resp.establishments);
+          //console.log(resp.establishments);
+          console.log(resp.establishments);
+          //this.establishments = resp.establishments;
+          //console.log(this.establishments);
+          this.setState(this.nextState);
+        });
+      }
+      //console.log(response);
+      return response;
+    })
+  }
+
   public render() {
     let distance;
+    let e;
 
     if (this.nextState.nearby || this.nextState.area){
       distance = <div>
@@ -221,12 +259,35 @@ export default class App extends React.Component<{}> {
         <div ref={el => this.mapContainer = el} className="map left right" style={{display: 'hidden', position: 'relative', width: "0", height: "0"}}/>
       </div>
     }
-   
+
+    // if (this.establishments != null){
+    //   for (let e of this.establishments)
+    //   establishment.push(<span>
+    //                 <span className="notpicked" onClick={this.distanceSelect.bind(this, 5000)}>{e.name}</span>
+    //     </span>)
+    // }
+
+    //let s = [1, 2, 3, 4, 5];
+
+    if (this.nextState.establishments){
+      let x = this.nextState.establishments;
+      console.log(x);
+      
+      e = x.map((e, i) => 
+        <span key={i}>
+          <span>{e.establishment.name}</span>
+        </span>
+      );
+      console.log(e);
+    }
 
     return (
       <div className="container">
         <div style={{textAlign: "center"}}>
           <span className="largetext">I really want food. </span>
+          <br/><br/>
+          <span className="mediumtext">I want to eat </span>
+          {e}
           <br/><br/>
           <span className="mediumtext">I want go somewhere </span>
 
@@ -269,4 +330,11 @@ export default class App extends React.Component<{}> {
       </div>
     );
   }
+}
+
+function toObject(arr) {
+  var rv = {};
+  for (var i = 0; i < arr.length; ++i)
+    if (arr[i] !== undefined) rv[i] = arr[i];
+  return rv;
 }

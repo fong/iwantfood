@@ -20,7 +20,7 @@ export default class AboutComponent extends React.Component <{}> {
 						So here it is.
 					</p>
 					<p>
-						There's an app for that.
+						There's now an app for that.
 					</p>
 				</div>
 			</div>
