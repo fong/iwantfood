@@ -18,7 +18,7 @@ export default class App extends React.Component<{}> {
     },
     distance: 1,
     nearby: false,
-    establishments: null
+    restaurant: null
   }
 
   public nextState: any = {
@@ -29,7 +29,7 @@ export default class App extends React.Component<{}> {
     },
     distance: 1,
     nearby: false,
-    establishments: null,
+    restaurant: null,
   };
 
   public lat = 0;
@@ -38,7 +38,6 @@ export default class App extends React.Component<{}> {
   public mapBox: any = null;
   public map: any;
   public circle: any;
-  public establishments;
 
   mapToggle: boolean = false;
   mapContainer: HTMLDivElement;
@@ -51,12 +50,13 @@ export default class App extends React.Component<{}> {
     this.nearbySelect = this.nearbySelect.bind(this);
     this.areaSelect = this.areaSelect.bind(this);
     this.showCurrentLocation();
-    this.getCrusines();
+    //this.getSearch();
+    //this.onChange();
     }
 
   public onChange = () => {
-    this.setState(this.nextState) // dumb easy: triggers render
-    console.log();
+    this.setState(this.nextState); // dumb easy: triggers render
+    console.log("onChange");
   }
 
   public showCurrentLocation = () => {
@@ -73,7 +73,7 @@ export default class App extends React.Component<{}> {
   }
 
   public showMap = () => {
-    const nextState = this.nextState;
+    // const nextState = this.nextState;
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -100,8 +100,13 @@ export default class App extends React.Component<{}> {
             console.log(this.nextState);
             this.circle.setCenter(this.map.getCenter());
           });
+
+          this.map.on('dragend', () => {
+            this.getSearch(this.nextState.currentLatLng.lat, this.nextState.currentLatLng.lng, this.nextState.distance); 
+          });
         }
-      );
+        ,function error(msg){alert('Please enable your GPS position future.');  
+        }, {maximumAge:600000, timeout:5000, enableHighAccuracy: true});
     }
   }
 
@@ -148,11 +153,11 @@ export default class App extends React.Component<{}> {
     if (this.circle){
       this.circle.setRadius(distance);
     }
-    this.setState(this.nextState); 
+    this.getSearch(this.nextState.currentLatLng.lat, this.nextState.currentLatLng.lng, this.nextState.distance);
+    this.setState(this.nextState);
   }
 
-  //94a1cc7a801233acc372942240f48ef5
-  public getCrusines() {
+  public getSearch(lat1, lng1, radius) {
 
     let header = new Headers();
     header.append('Accept', 'application/json');
@@ -163,23 +168,39 @@ export default class App extends React.Component<{}> {
         headers: header
       }
 
-    fetch(new Request('https://developers.zomato.com/api/v2.1/establishments?lat=-36.758917&lon=174.715662'), init)
+    fetch(new Request('https://developers.zomato.com/api/v2.1/search?lat=' + lat1 + '&lon=' + lng1 + '&radius=' + radius + '&sort=real_distance&order=desc'), init)
     .then((response : any) => {
       if (!response.ok) {
         //this.setState({results: response.statusText})
       }
       else {
         response.json().then((resp:any) => {
-          this.nextState = JSON.parse(JSON.stringify(this.nextState));
-          this.nextState.establishments = resp.establishments;//toObject(resp.establishments);
-          //console.log(resp.establishments);
-          console.log(resp.establishments);
-          //this.establishments = resp.establishments;
-          //console.log(this.establishments);
+
+          let searching = true;
+          let valid = false;
+          let count = 0;
+                    
+          while (searching){
+            let x = Math.floor(Math.random() * Math.floor(20));
+            let lat2 = (resp.restaurants[x].restaurant.location.latitude);
+            let lng2 = (resp.restaurants[x].restaurant.location.longitude);
+            if (latlngToDistance(lat1, lng1, lat2, lng2) <= radius){
+              searching = false;
+              valid = true;
+              this.nextState = JSON.parse(JSON.stringify(this.nextState));
+              this.nextState.restaurant = resp.restaurants[x].restaurant;
+              console.log(this.nextState.restaurant);
+              this.setState(this.nextState);
+            }
+            if (count == 40){
+              searching = false;
+              valid = false;
+            }
+            count++;
+          }
           this.setState(this.nextState);
         });
       }
-      //console.log(response);
       return response;
     })
   }
@@ -260,34 +281,13 @@ export default class App extends React.Component<{}> {
       </div>
     }
 
-    // if (this.establishments != null){
-    //   for (let e of this.establishments)
-    //   establishment.push(<span>
-    //                 <span className="notpicked" onClick={this.distanceSelect.bind(this, 5000)}>{e.name}</span>
-    //     </span>)
-    // }
-
-    //let s = [1, 2, 3, 4, 5];
-
-    if (this.nextState.establishments){
-      let x = this.nextState.establishments;
-      console.log(x);
-      
-      e = x.map((e, i) => 
-        <span key={i}>
-          <span>{e.establishment.name}</span>
-        </span>
-      );
-      console.log(e);
-    }
-
     return (
       <div className="container">
         <div style={{textAlign: "center"}}>
           <span className="largetext">I really want food. </span>
           <br/><br/>
-          <span className="mediumtext">I want to eat </span>
-          {e}
+          {/* <span className="mediumtext">I want to eat </span>
+          {e} */}
           <br/><br/>
           <span className="mediumtext">I want go somewhere </span>
 
@@ -323,18 +323,41 @@ export default class App extends React.Component<{}> {
 
         {this.mapBox}
 
-        <p>
-          currentLat={this.nextState.currentLatLng.lat}<br/>
-          currentLng={this.nextState.currentLatLng.lng}
-        </p>
+      <div style={{textAlign: "center", marginTop: "1em"}}>
+        {this.nextState.restaurant ? (
+            <div>
+              <div className="name" onClick={this.areaSelect}>{this.nextState.restaurant.name}</div>
+              <div className="cuisine">{this.nextState.restaurant.cuisines}</div>
+            </div>) : (<span></span>)}
       </div>
+    </div>
     );
   }
 }
 
-function toObject(arr) {
-  var rv = {};
-  for (var i = 0; i < arr.length; ++i)
-    if (arr[i] !== undefined) rv[i] = arr[i];
-  return rv;
+// function toObject(arr) {
+//   var rv = {};
+//   for (var i = 0; i < arr.length; ++i)
+//     if (arr[i] !== undefined) rv[i] = arr[i];
+//   return rv;
+// }
+
+function latlngToDistance(lat1, lng1, lat2, lng2){
+  let R = 6371e3; // metres
+  let φ1 = toRadians(lat1);
+  let φ2 = toRadians(lat2);
+  let Δφ = toRadians(lat2-lat1);
+  let Δλ = toRadians(lng2-lng1);
+
+  let a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+          Math.cos(φ1) * Math.cos(φ2) *
+          Math.sin(Δλ/2) * Math.sin(Δλ/2);
+          let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  //var d = R * c;
+  return R * c;
+}
+
+function toRadians (angle) {
+  return angle * (Math.PI / 180);
 }
