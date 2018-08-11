@@ -29,17 +29,20 @@
 
 .largetext {
   font-size: 5em;
-  line-height: 0.5em;
+  line-height: 1em;
+  text-align: center;
 }
 
 .mediumtext {
   font-size: 2.5em;
-  line-height: 0.4em;
+  line-height: 1em;
+  text-align: center;
 }
 
 .normaltext {
   font-size: 2em;
-  line-height: 0.3em;
+  line-height: 1em;
+  text-align: center;
 }
 
 .mapBox {

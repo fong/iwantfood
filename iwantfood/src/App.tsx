@@ -284,12 +284,12 @@ export default class App extends React.Component<{}> {
     return (
       <div className="container">
         <div style={{textAlign: "center"}}>
-          <span className="largetext">I really want food. </span>
+          <div className="largetext">I really want food. </div>
           <br/><br/>
           {/* <span className="mediumtext">I want to eat </span>
           {e} */}
           <br/><br/>
-          <span className="mediumtext">I want go somewhere </span>
+          <div className="mediumtext">I want go somewhere </div>
 
           {this.nextState.nearby ? (
             <span>
