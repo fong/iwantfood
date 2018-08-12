@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export default class AboutComponent extends React.Component <{}> {
+export default class About extends React.Component <{}> {
 	
 	public render() {
 		return (
@@ -20,7 +20,13 @@ export default class AboutComponent extends React.Component <{}> {
 						So here it is.
 					</p>
 					<p>
-						There's now an app for that.
+						There's now an (web) app for that.
+					</p>
+					<br/>
+					<br/>
+					<br/>
+					<p>
+						Created by Eugene @ <a href="https://tofoo.co" target="_blank">tofoo.co</a>
 					</p>
 				</div>
 			</div>

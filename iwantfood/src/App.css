@@ -11,19 +11,19 @@
 
 .notpicked:hover {
   font-size: 1.5em;
-  color: #83afe7;
+  color: #d2c8ff;
   cursor: pointer
 }
 
 .picked {
   font-size: 2.5em;
-  color: #00aeff;
+  color: #F2CC8F;
   cursor: pointer
 }
 
 .picked:hover {
   font-size: 2.5em;
-  color: #83bae7;
+  color: #d2c8ff;
   cursor: pointer
 }
 
@@ -54,15 +54,87 @@
 .name {
   font-size: 2.5em;
   font-style: italic;
-  line-height: 0.5em;
+  line-height: 1em;
   margin: 1em;
+  color: black;
 }
 
 .cuisine {
   font-size: 1.5em;
   line-height: 0.2em;
-  margin: 0.5em;
+  margin: 1em;
+  color: black;
 }
-/* .map {
-  width: 50%;
-} */
+
+a:hover {
+  color: #d2c8ff;
+}
+
+@media (min-width:320px)  { /* smartphones, iPhone, portrait 480x320 phones */ 
+  .card {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+  }
+}
+@media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ 
+  .card {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+  }
+}
+@media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
+  .card {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+  }
+}
+@media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ 
+  .card {
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+  }
+}
+@media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ 
+  .card {
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+  }
+}
+@media (min-width:1281px) { /* hi-res laptops and desktops */ 
+  .card {
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+  }
+}
+
+.noRest {
+  font-size: 2.5em;
+  font-style: italic;
+  line-height: 0.5em;
+  margin: 1em;
+  color: white;
+}
+
+.sub {
+  font-size: 1em;
+  color: black;
+  line-height: 1em;
+}
+
+.subsub {
+  font-size: 0.9em;
+  color: grey;
+  line-height: 1em;
+}

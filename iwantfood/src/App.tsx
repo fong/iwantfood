@@ -1,11 +1,13 @@
 // import { MenuItem, TextField } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import MapboxCircle from 'mapbox-gl-circle';
 import * as mapboxgl from 'mapbox-gl';
 import * as React from 'react';
 import './App.css';
+import * as ReactDOM from 'react-dom';
 
 Object.getOwnPropertyDescriptor(mapboxgl, "accessToken").set('pk.eyJ1IjoiZm9uZ2UiLCJhIjoiY2prZ2l0Ynh3MGpuZzNxb2E0ajlieTRuNiJ9.C08CmyiuDI7ghzetVakgCA');
-
 // (mapboxgl as any).accessToken = "pk.eyJ1IjoiZm9uZ2UiLCJhIjoiY2prZ2l0Ynh3MGpuZzNxb2E0ajlieTRuNiJ9.C08CmyiuDI7ghzetVakgCA";
 
 export default class App extends React.Component<{}> {
@@ -18,7 +20,8 @@ export default class App extends React.Component<{}> {
     },
     distance: 1,
     nearby: false,
-    restaurant: null
+    restaurant: null,
+    restaurantDistance: 0,
   }
 
   public nextState: any = {
@@ -30,6 +33,7 @@ export default class App extends React.Component<{}> {
     distance: 1,
     nearby: false,
     restaurant: null,
+    restaurantDistance: 0,
   };
 
   public lat = 0;
@@ -38,28 +42,25 @@ export default class App extends React.Component<{}> {
   public mapBox: any = null;
   public map: any;
   public circle: any;
+  public marker: any;
+  public cardref: any;
 
   mapToggle: boolean = false;
   mapContainer: HTMLDivElement;
 
-/*   public mapContainer: any;
- */
   constructor(props: any){
     super(props)
-    // this.showCurrentLocation()
     this.nearbySelect = this.nearbySelect.bind(this);
     this.areaSelect = this.areaSelect.bind(this);
     this.showCurrentLocation();
-    //this.getSearch();
-    //this.onChange();
     }
 
-  public onChange = () => {
-    this.setState(this.nextState); // dumb easy: triggers render
-    console.log("onChange");
-  }
-
   public showCurrentLocation = () => {
+    this.nextState = JSON.parse(JSON.stringify(this.nextState));
+    this.nextState.currentLatLng.lat =  -36.852567;
+    this.nextState.currentLatLng.lng = 174.763551;
+    this.setState(this.nextState);
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -67,46 +68,47 @@ export default class App extends React.Component<{}> {
           this.nextState.currentLatLng.lat = position.coords.latitude;
           this.nextState.currentLatLng.lng = position.coords.longitude;
           this.setState(this.nextState);
-        }
-      )
+        }, function error(msg){//alert(msg);  
+      }, {maximumAge:600000, timeout:20000, enableHighAccuracy: true});
     }
   }
 
   public showMap = () => {
-    // const nextState = this.nextState;
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          this.lat =  position.coords.latitude;
-          this.lng = position.coords.longitude;
+      try {
+        this.lat =  this.nextState.currentLatLng.lat;
+        this.lng = this.nextState.currentLatLng.lng;
 
-          this.map = new mapboxgl.Map({
-            container: this.mapContainer,
-            style: 'mapbox://styles/mapbox/streets-v10',
-            center: [this.lng, this.lat],
-            zoom: 12
-          });
+        this.map = new mapboxgl.Map({
+          container: this.mapContainer,
+          style: 'mapbox://styles/mapbox/streets-v10',
+          center: [this.lng, this.lat],
+          zoom: 12
+        });
 
-          this.circle = new MapboxCircle({lat: this.lat, lng: this.lng}, this.nextState.distance, {
-            fillColor: '#29AB87'
-          }).addTo(this.map);
-      
-          this.map.on('move', () => {
-            this.nextState = JSON.parse(JSON.stringify(this.nextState));
-            this.nextState.currentLatLng.lat = this.map.getCenter().lat;
-            this.nextState.currentLatLng.lng = this.map.getCenter().lng;
+        this.circle = new MapboxCircle({lat: this.lat, lng: this.lng}, this.nextState.distance, {
+          fillColor: '#29AB87'
+        }).addTo(this.map);
+        
+        this.map.on('move', () => {
+          this.nextState = JSON.parse(JSON.stringify(this.nextState));
+          this.nextState.currentLatLng.lat = this.map.getCenter().lat;
+          this.nextState.currentLatLng.lng = this.map.getCenter().lng;
+          this.setState(this.nextState);
+          console.log(this.nextState);
+          this.circle.setCenter(this.map.getCenter());
+        });
 
-            this.setState(this.nextState);
-            console.log(this.nextState);
-            this.circle.setCenter(this.map.getCenter());
-          });
+        this.map.on('dragend', () => {
+          this.getSearch(this.nextState.currentLatLng.lat, this.nextState.currentLatLng.lng, this.nextState.distance); 
+        });
 
-          this.map.on('dragend', () => {
-            this.getSearch(this.nextState.currentLatLng.lat, this.nextState.currentLatLng.lng, this.nextState.distance); 
-          });
-        }
-        ,function error(msg){alert('Please enable your GPS position future.');  
-        }, {maximumAge:600000, timeout:5000, enableHighAccuracy: true});
+        this.map.on('load', () => {
+          this.map.resize();
+        })
+      } catch (err) {
+        //alert('Error: ' + err);
+      }
     }
   }
 
@@ -130,7 +132,6 @@ export default class App extends React.Component<{}> {
 
   public areaSelect(){
     this.nextState = JSON.parse(JSON.stringify(this.nextState));
-    this.showMap();
     if (this.nextState.nearby === true){
       this.nextState.area = true;
       this.nextState.nearby = false;
@@ -139,8 +140,10 @@ export default class App extends React.Component<{}> {
         this.nextState.area = false;
         this.nextState.nearby = false;
       } else {
+        this.map = null;
         this.nextState.area = true;
         this.nextState.nearby = false;
+        this.showMap();
       }
     }
     this.setState(this.nextState);
@@ -177,28 +180,42 @@ export default class App extends React.Component<{}> {
         response.json().then((resp:any) => {
 
           let searching = true;
-          let valid = false;
           let count = 0;
-                    
-          while (searching){
-            let x = Math.floor(Math.random() * Math.floor(20));
-            let lat2 = (resp.restaurants[x].restaurant.location.latitude);
-            let lng2 = (resp.restaurants[x].restaurant.location.longitude);
-            if (latlngToDistance(lat1, lng1, lat2, lng2) <= radius){
+              
+            while (searching){
+              try {  
+              let x = Math.floor(Math.random() * Math.floor(20));
+              let lat2 = (resp.restaurants[x].restaurant.location.latitude);
+              let lng2 = (resp.restaurants[x].restaurant.location.longitude);
+              if (latlngToDistance(lat1, lng1, lat2, lng2) <= radius){
+                searching = false;
+                if (this.map){
+                  if (this.marker) this.marker.remove();
+                  let v = new mapboxgl.LngLat(lng2, lat2);
+                  this.marker = new mapboxgl.Marker(this.marker)
+                  .setLngLat(v)
+                  .addTo(this.map);
+                }
+                this.nextState = JSON.parse(JSON.stringify(this.nextState));
+                this.nextState.restaurant = resp.restaurants[x].restaurant;
+                this.nextState.restaurantDistance = latlngToDistance(lat1, lng1, lat2, lng2);
+                console.log(this.nextState.restaurant);
+                this.setState(this.nextState);
+                break;
+              }
+              if (count == 40){
+                searching = false;
+                this.nextState = JSON.parse(JSON.stringify(this.nextState));
+                this.nextState.restaurant = null;
+                console.log(this.nextState.restaurant);
+                this.setState(this.nextState);
+              }
+            } catch (err) {
+              //alert(err);
               searching = false;
-              valid = true;
-              this.nextState = JSON.parse(JSON.stringify(this.nextState));
-              this.nextState.restaurant = resp.restaurants[x].restaurant;
-              console.log(this.nextState.restaurant);
-              this.setState(this.nextState);
             }
-            if (count == 40){
-              searching = false;
-              valid = false;
+              count++;
             }
-            count++;
-          }
-          this.setState(this.nextState);
         });
       }
       return response;
@@ -271,13 +288,12 @@ export default class App extends React.Component<{}> {
     }
 
     if (this.nextState.area){
-      this.mapBox = <div className="mapBox">
-        <div ref={el => this.mapContainer = el} className="map left right" style={{position: 'relative', width: "85%", height: "360px"}}/>
+      this.mapBox = <div className="mapBox" style={{position: 'relative', width: "85%", height: "360px", marginLeft: "auto", marginRight: "auto"}}>
+        <div ref={el => {this.mapContainer = el;}} className="map left right" style={{position: 'relative', width: "85%", height: "360px", marginLeft: "auto", marginRight: "auto"}}/>
       </div>
     } else {
-      console.log('else');
       this.mapBox = <div className="mapBox" style={{display: 'hidden'}}>
-        <div ref={el => this.mapContainer = el} className="map left right" style={{display: 'hidden', position: 'relative', width: "0", height: "0"}}/>
+        <div ref={el => {this.mapContainer = el;}} className="map left right" style={{display: 'hidden', position: 'relative', marginLeft: "auto", marginRight: "auto"}}/>
       </div>
     }
 
@@ -286,8 +302,6 @@ export default class App extends React.Component<{}> {
         <div style={{textAlign: "center"}}>
           <div className="largetext">I really want food. </div>
           <br/><br/>
-          {/* <span className="mediumtext">I want to eat </span>
-          {e} */}
           <br/><br/>
           <div className="mediumtext">I want go somewhere </div>
 
@@ -323,24 +337,36 @@ export default class App extends React.Component<{}> {
 
         {this.mapBox}
 
+      <div style={{marginBottom: "5em"}}>
+      </div>
       <div style={{textAlign: "center", marginTop: "1em"}}>
         {this.nextState.restaurant ? (
-            <div>
-              <div className="name" onClick={this.areaSelect}>{this.nextState.restaurant.name}</div>
-              <div className="cuisine">{this.nextState.restaurant.cuisines}</div>
-            </div>) : (<span></span>)}
+            <Card className="card">
+              <CardContent>
+                <a href={this.nextState.restaurant.url} target="_blank">
+                <div ref={this.cardref} className="name">{this.nextState.restaurant.name}</div>
+                <div className="cuisine">{this.nextState.restaurant.cuisines}</div>
+                <br/>
+                <div className="sub">{this.nextState.restaurant.location.address}</div><br/>
+                <div className="sub">{Math.round(this.nextState.restaurantDistance)} metres away</div><br/>
+                <div className="subsub" style={{textAlign: "right", bottom: 0}}>Click on card to open on Zomato</div>
+                </a>
+              </CardContent>
+            </Card>
+            ) : (<div className="noRest">No Restaurants</div>)}
+      </div>
+      {/* <p>
+        {this.nextState.currentLatLng.lat}
+      </p>
+      <p>
+        {this.nextState.currentLatLng.lng}
+      </p> */}
+      <div style={{marginBottom: "10em"}}>
       </div>
     </div>
     );
   }
 }
-
-// function toObject(arr) {
-//   var rv = {};
-//   for (var i = 0; i < arr.length; ++i)
-//     if (arr[i] !== undefined) rv[i] = arr[i];
-//   return rv;
-// }
 
 function latlngToDistance(lat1, lng1, lat2, lng2){
   let R = 6371e3; // metres
@@ -353,8 +379,6 @@ function latlngToDistance(lat1, lng1, lat2, lng2){
           Math.cos(φ1) * Math.cos(φ2) *
           Math.sin(Δλ/2) * Math.sin(Δλ/2);
           let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-  //var d = R * c;
   return R * c;
 }
 

@@ -26,14 +26,14 @@ import { Link } from 'react-router-dom';
 export const Header: React.StatelessComponent<{}> = () => {
     return (
         <AppBar position="static" color="default">
-            <Toolbar style={{backgroundColor: "gray"}}>
+            <Toolbar style={{backgroundColor: "#E07A5F"}}>
                 <Link to="/">
                     <Button color="inherit">
                         {/* <Link style={{color: "white"}} to="/">I want food</Link> */}
-                        I really want food.
+                        I really want food
                     </Button>
                 </Link>
-                <Link to="/AboutComponent">
+                <Link to="/About">
                     <Button color="inherit">
                         About 
                     </Button>
