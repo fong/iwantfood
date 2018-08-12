@@ -8,7 +8,7 @@ export default class About extends React.Component <{}> {
 				<div className="centreText">
 					{/* React components must have a wrapper node/element */}
 					<h1>
-						Hi.
+						Hello there,
 					</h1>
 					<h3>
 						I made this because I was hungry.

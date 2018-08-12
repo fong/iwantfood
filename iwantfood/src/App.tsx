@@ -117,6 +117,7 @@ export default class App extends React.Component<{}> {
     //console.log("this.nearbySelect");
     this.nextState = JSON.parse(JSON.stringify(this.nextState));
     if (this.nextState.area === true){
+      if (this.map) this.map.resize();
       this.nextState.nearby = true;
       this.nextState.area = false;
     } else {
@@ -124,6 +125,7 @@ export default class App extends React.Component<{}> {
         this.nextState.nearby = false;
         this.nextState.area = false;
       } else {
+        if (this.map) this.map.resize();
         this.nextState.nearby = true;
         this.nextState.area = false;
       }
@@ -134,7 +136,6 @@ export default class App extends React.Component<{}> {
   public areaSelect(){
     this.nextState = JSON.parse(JSON.stringify(this.nextState));
     if (this.nextState.nearby === true){
-      this.map = null;
       this.nextState.area = true;
       this.nextState.nearby = false;
       this.showMap();
@@ -143,7 +144,6 @@ export default class App extends React.Component<{}> {
         this.nextState.area = false;
         this.nextState.nearby = false;
       } else {
-        this.map = null;
         this.nextState.area = true;
         this.nextState.nearby = false;
         this.showMap();
@@ -296,8 +296,8 @@ export default class App extends React.Component<{}> {
         <div ref={el => {this.mapContainer = el;}} className="mapmap map left right"/>
       </div>
     } else {
-      this.mapBox = <div className="mapBox" style={{display: 'hidden'}}>
-        <div ref={el => {this.mapContainer = el;}} className="map left right" style={{display: 'hidden', position: 'relative', marginLeft: "auto", marginRight: "auto"}}/>
+      this.mapBox = <div className="mapBox" style={{display: 'hidden', height: '0', width: '0'}}>
+        <div ref={el => {this.mapContainer = el;}} className="mapmap map left right" style={{display: 'hidden', position: 'relative', height: '0', width: '0'}}/>
       </div>
     }
 
