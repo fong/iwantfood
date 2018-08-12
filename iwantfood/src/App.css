@@ -77,6 +77,22 @@ a:hover {
     margin-right: auto;
     color: black;
   }
+
+  .mapBox {
+    position: relative;
+    width: 95%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mapmap {
+    position: relative;
+    width: 95%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 @media (min-width:481px)  { /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ 
   .card {
@@ -84,6 +100,20 @@ a:hover {
     margin-left: auto;
     margin-right: auto;
     color: black;
+  }
+  .mapBox {
+    position: relative;
+    width: 95%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mapmap {
+    position: relative;
+    width: 95%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 @media (min-width:641px)  { /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ 
@@ -93,6 +123,20 @@ a:hover {
     margin-right: auto;
     color: black;
   }
+  .mapBox {
+    position: relative;
+    width: 95%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mapmap {
+    position: relative;
+    width: 95%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 @media (min-width:961px)  { /* tablet, landscape iPad, lo-res laptops ands desktops */ 
   .card {
@@ -100,6 +144,20 @@ a:hover {
     margin-left: auto;
     margin-right: auto;
     color: black;
+  }
+  .mapBox {
+    position: relative;
+    width: 85%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mapmap {
+    position: relative;
+    width: 85%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 @media (min-width:1025px) { /* big landscape tablets, laptops, and desktops */ 
@@ -109,6 +167,20 @@ a:hover {
     margin-right: auto;
     color: black;
   }
+  .mapBox {
+    position: relative;
+    width: 85%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mapmap {
+    position: relative;
+    width: 85%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 @media (min-width:1281px) { /* hi-res laptops and desktops */ 
   .card {
@@ -116,6 +188,20 @@ a:hover {
     margin-left: auto;
     margin-right: auto;
     color: black;
+  }
+  .mapBox {
+    position: relative;
+    width: 85%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .mapmap {
+    position: relative;
+    width: 85%;
+    height: 360px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 

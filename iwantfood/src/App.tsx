@@ -52,6 +52,7 @@ export default class App extends React.Component<{}> {
     super(props)
     this.nearbySelect = this.nearbySelect.bind(this);
     this.areaSelect = this.areaSelect.bind(this);
+    this.cardref = React.createRef(); // React 16.2+ String Ref doesn't work (https://stackoverflow.com/questions/43873511/deprecation-warning-using-this-refs)
     this.showCurrentLocation();
     }
 
@@ -95,7 +96,7 @@ export default class App extends React.Component<{}> {
           this.nextState.currentLatLng.lat = this.map.getCenter().lat;
           this.nextState.currentLatLng.lng = this.map.getCenter().lng;
           this.setState(this.nextState);
-          console.log(this.nextState);
+          //console.log(this.nextState);
           this.circle.setCenter(this.map.getCenter());
         });
 
@@ -113,7 +114,7 @@ export default class App extends React.Component<{}> {
   }
 
   public nearbySelect(){
-    console.log("this.nearbySelect");
+    //console.log("this.nearbySelect");
     this.nextState = JSON.parse(JSON.stringify(this.nextState));
     if (this.nextState.area === true){
       this.nextState.nearby = true;
@@ -133,8 +134,10 @@ export default class App extends React.Component<{}> {
   public areaSelect(){
     this.nextState = JSON.parse(JSON.stringify(this.nextState));
     if (this.nextState.nearby === true){
+      this.map = null;
       this.nextState.area = true;
       this.nextState.nearby = false;
+      this.showMap();
     } else {
       if (this.nextState.area === true){
         this.nextState.area = false;
@@ -199,15 +202,16 @@ export default class App extends React.Component<{}> {
                 this.nextState = JSON.parse(JSON.stringify(this.nextState));
                 this.nextState.restaurant = resp.restaurants[x].restaurant;
                 this.nextState.restaurantDistance = latlngToDistance(lat1, lng1, lat2, lng2);
-                console.log(this.nextState.restaurant);
+                //console.log(this.nextState.restaurant);
                 this.setState(this.nextState);
+                window.scrollTo(0, this.cardref.offsetTop);
                 break;
               }
               if (count == 40){
                 searching = false;
                 this.nextState = JSON.parse(JSON.stringify(this.nextState));
                 this.nextState.restaurant = null;
-                console.log(this.nextState.restaurant);
+                //console.log(this.nextState.restaurant);
                 this.setState(this.nextState);
               }
             } catch (err) {
@@ -288,8 +292,8 @@ export default class App extends React.Component<{}> {
     }
 
     if (this.nextState.area){
-      this.mapBox = <div className="mapBox" style={{position: 'relative', width: "85%", height: "360px", marginLeft: "auto", marginRight: "auto"}}>
-        <div ref={el => {this.mapContainer = el;}} className="map left right" style={{position: 'relative', width: "85%", height: "360px", marginLeft: "auto", marginRight: "auto"}}/>
+      this.mapBox = <div className="mapBox">
+        <div ref={el => {this.mapContainer = el;}} className="mapmap map left right"/>
       </div>
     } else {
       this.mapBox = <div className="mapBox" style={{display: 'hidden'}}>
@@ -339,7 +343,7 @@ export default class App extends React.Component<{}> {
 
       <div style={{marginBottom: "5em"}}>
       </div>
-      <div style={{textAlign: "center", marginTop: "1em"}}>
+      <div ref={(el) => this.cardref = el} style={{textAlign: "center", marginTop: "1em"}}>
         {this.nextState.restaurant ? (
             <Card className="card">
               <CardContent>
@@ -349,7 +353,7 @@ export default class App extends React.Component<{}> {
                 <br/>
                 <div className="sub">{this.nextState.restaurant.location.address}</div><br/>
                 <div className="sub">{Math.round(this.nextState.restaurantDistance)} metres away</div><br/>
-                <div className="subsub" style={{textAlign: "right", bottom: 0}}>Click on card to open on Zomato</div>
+                <div className="subsub" style={{textAlign: "right", bottom: 0}}>Click here to open on Zomato</div>
                 </a>
               </CardContent>
             </Card>
