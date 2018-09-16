@@ -12,15 +12,21 @@ The objectives of this application is to:
 
 [Go here](https://ireallywantfood.azurewebsites.net)
 
-## I want to run it!
+## I want to run it locally!
 
 1. Install React
 2. Clone this repo
-3. Open to root of this repo and run ```npm install```
-4. Go to '''localhost:3000''' on your favourite web browser
+3. Open to root of this repo and run ```npm install``` in CMD
+4. Run ```npm run```
+4. Go to ```localhost:3000``` on your favourite web browser
 5. Profit?
 
-Alternatively, if you have docker set up
+## The Tech Behind this Web App
 
-1. ```docker build -t iwantfood```
-2. ```docker run```
+* ReactJS + NodeJS
+* Mapbox API
+* Zomato API
+* Material UI
+* Docker
+* Azure
+* My ~~blood,~~ sweat ~~, and tears~~
