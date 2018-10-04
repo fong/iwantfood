@@ -10,7 +10,7 @@ The objectives of this application is to:
 
 ## I want to try it!
 
-[Go here](https://ireallywantfood.azurewebsites.net) or [here](https://i-really-want-food.firebaseapp.com)
+[Go here](https://ireallywantfood.azurewebsites.net) or [here](https://irwf.tofoo.co/)
 
 ## I want to run it locally!
 
